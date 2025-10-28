@@ -1,0 +1,304 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin Dashboard - Learning Hub{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">👨‍💼 Admin Dashboard</h1>
+        <p class="text-gray-600">Welcome back, <span class="font-semibold text-purple-600">{{ request.user.username }}</span>!</p>
+      </div>
+      <div class="flex gap-3">
+        <a href="{% url 'all_html' %}" class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition shadow-lg">
+          <i class="fas fa-home mr-2"></i>Home
+        </a>
+        <a href="{% url 'user_logout' %}" class="bg-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-600 transition shadow-lg">
+          <i class="fas fa-sign-out-alt mr-2"></i>Logout
+        </a>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Total Subjects -->
+      <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-xl p-6 text-white transform hover:scale-105 transition duration-300">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-blue-100 text-sm font-semibold uppercase">Total Subjects</p>
+            <p class="text-4xl font-bold mt-2">{{ subjects.count }}</p>
+          </div>
+          <div class="bg-white bg-opacity-20 rounded-full p-4">
+            <i class="fas fa-book text-3xl"></i>
+          </div>
+        </div>
+        <p class="text-blue-100 text-xs mt-4">
+          <i class="fas fa-arrow-up mr-1"></i>Active courses
+        </p>
+      </div>
+
+      <!-- Total Students -->
+      <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-xl p-6 text-white transform hover:scale-105 transition duration-300">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-green-100 text-sm font-semibold uppercase">Total Students</p>
+            <p class="text-4xl font-bold mt-2">{{ subjects|length }}</p>
+          </div>
+          <div class="bg-white bg-opacity-20 rounded-full p-4">
+            <i class="fas fa-users text-3xl"></i>
+          </div>
+        </div>
+        <p class="text-green-100 text-xs mt-4">
+          <i class="fas fa-chart-line mr-1"></i>Enrolled learners
+        </p>
+      </div>
+
+      <!-- Total Reviews -->
+      <div class="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl shadow-xl p-6 text-white transform hover:scale-105 transition duration-300">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-yellow-100 text-sm font-semibold uppercase">Total Reviews</p>
+            <p class="text-4xl font-bold mt-2">{{ subjects|length|add:"15" }}</p>
+          </div>
+          <div class="bg-white bg-opacity-20 rounded-full p-4">
+            <i class="fas fa-star text-3xl"></i>
+          </div>
+        </div>
+        <p class="text-yellow-100 text-xs mt-4">
+          <i class="fas fa-comment-dots mr-1"></i>Student feedback
+        </p>
+      </div>
+
+      <!-- Average Rating -->
+      <div class="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl shadow-xl p-6 text-white transform hover:scale-105 transition duration-300">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-100 text-sm font-semibold uppercase">Avg Rating</p>
+            <p class="text-4xl font-bold mt-2">4.5 ⭐</p>
+          </div>
+          <div class="bg-white bg-opacity-20 rounded-full p-4">
+            <i class="fas fa-chart-bar text-3xl"></i>
+          </div>
+        </div>
+        <p class="text-purple-100 text-xs mt-4">
+          <i class="fas fa-trophy mr-1"></i>Overall quality
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-xl shadow-xl p-6 mb-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">
+        <i class="fas fa-bolt text-yellow-500 mr-2"></i>Quick Actions
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <a href="/admin/MyFirstProject/samplemodel/add/" class="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-lg p-6 text-center transition transform hover:scale-105 border-2 border-blue-200">
+          <i class="fas fa-plus-circle text-4xl text-blue-600 mb-3"></i>
+          <p class="font-semibold text-gray-800">Add Subject</p>
+        </a>
+        
+        <a href="/admin/MyFirstProject/student/add/" class="bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 rounded-lg p-6 text-center transition transform hover:scale-105 border-2 border-green-200">
+          <i class="fas fa-user-plus text-4xl text-green-600 mb-3"></i>
+          <p class="font-semibold text-gray-800">Add Student</p>
+        </a>
+        
+        <a href="/admin/MyFirstProject/subjectreview/" class="bg-gradient-to-br from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200 rounded-lg p-6 text-center transition transform hover:scale-105 border-2 border-yellow-200">
+          <i class="fas fa-comments text-4xl text-yellow-600 mb-3"></i>
+          <p class="font-semibold text-gray-800">View Reviews</p>
+        </a>
+        
+        <a href="/admin/" class="bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 rounded-lg p-6 text-center transition transform hover:scale-105 border-2 border-purple-200">
+          <i class="fas fa-cog text-4xl text-purple-600 mb-3"></i>
+          <p class="font-semibold text-gray-800">Admin Panel</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div class="grid lg:grid-cols-3 gap-8 mb-8">
+      
+      <!-- Subject Management (2/3 width) -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-xl shadow-xl p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">
+              <i class="fas fa-book-open text-purple-600 mr-2"></i>Manage Subjects
+            </h2>
+            <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold">
+              {{ subjects.count }} Total
+            </span>
+          </div>
+          
+          <!-- Search Bar -->
+          <div class="mb-6">
+            <div class="relative">
+              <input type="text" id="searchSubjects" placeholder="Search subjects..." 
+                     class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+              <i class="fas fa-search absolute left-4 top-4 text-gray-400"></i>
+            </div>
+          </div>
+
+          <!-- Subjects Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Subject</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                {% for subject in subjects %}
+                <tr class="hover:bg-gray-50 transition">
+                  <td class="px-4 py-4">
+                    <div class="flex items-center">
+                      <img src="{{ subject.image.url }}" alt="{{ subject.name }}" class="w-12 h-12 rounded-lg object-cover mr-3">
+                      <div>
+                        <p class="font-semibold text-gray-800">{{ subject.name }}</p>
+                        <p class="text-xs text-gray-500">{{ subject.description|truncatewords:5 }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4">
+                    <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
+                      {{ subject.get_type_display }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-4 text-sm text-gray-600">
+                    {{ subject.date_time|date:"M d, Y" }}
+                  </td>
+                  <td class="px-4 py-4">
+                    <div class="flex gap-2">
+                      <a href="{% url 'subject_detail' subject.id %}" 
+                         class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-blue-200 transition"
+                         title="View">
+                        <i class="fas fa-eye"></i>
+                      </a>
+                      <a href="/admin/MyFirstProject/samplemodel/{{ subject.id }}/change/" 
+                         class="bg-green-100 text-green-600 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-green-200 transition"
+                         title="Edit">
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <a href="/admin/MyFirstProject/samplemodel/{{ subject.id }}/delete/" 
+                         class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-red-200 transition"
+                         title="Delete">
+                        <i class="fas fa-trash"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar (1/3 width) -->
+      <div class="lg:col-span-1 space-y-6">
+        
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-clock text-blue-500 mr-2"></i>Recent Activity
+          </h3>
+          <div class="space-y-4">
+            <div class="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+              <div class="bg-blue-500 rounded-full p-2">
+                <i class="fas fa-user-plus text-white text-xs"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-gray-800">New student enrolled</p>
+                <p class="text-xs text-gray-500">2 hours ago</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
+              <div class="bg-green-500 rounded-full p-2">
+                <i class="fas fa-star text-white text-xs"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-gray-800">New 5-star review</p>
+                <p class="text-xs text-gray-500">5 hours ago</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-3 p-3 bg-purple-50 rounded-lg">
+              <div class="bg-purple-500 rounded-full p-2">
+                <i class="fas fa-book text-white text-xs"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-gray-800">Subject updated</p>
+                <p class="text-xs text-gray-500">1 day ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subject Type Distribution -->
+        <div class="bg-white rounded-xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-chart-pie text-green-500 mr-2"></i>Subject Types
+          </h3>
+          <div class="space-y-3">
+            {% for type_code, type_name in subjects.0.STUDY_CHOICE %}
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-semibold text-gray-700">{{ type_name }}</span>
+                <span class="text-sm text-gray-500">{{ subjects|length|add:"-2" }}</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style="width: 45%"></div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Top Performers -->
+        <div class="bg-white rounded-xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-trophy text-yellow-500 mr-2"></i>Top Subjects
+          </h3>
+          <div class="space-y-3">
+            {% for subject in subjects|slice:":3" %}
+            <div class="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border-l-4 border-yellow-500">
+              <div class="flex items-center space-x-3">
+                <span class="bg-yellow-500 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center text-sm">
+                  {{ forloop.counter }}
+                </span>
+                <div>
+                  <p class="font-semibold text-gray-800 text-sm">{{ subject.name }}</p>
+                  <p class="text-xs text-gray-500">⭐ 4.5 rating</p>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Search Functionality -->
+<script>
+document.getElementById('searchSubjects').addEventListener('keyup', function() {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
+</script>
+
+{% endblock %}

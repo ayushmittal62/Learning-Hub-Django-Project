@@ -1,0 +1,212 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Contact Us - Learning Hub
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-purple-700 via-pink-600 to-red-600 text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Get In Touch</h1>
+        <p class="text-xl md:text-2xl text-gray-100 max-w-3xl mx-auto">
+            We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+        </p>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid md:grid-cols-2 gap-12">
+            <!-- Contact Form -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Send Us a Message</h2>
+                <form class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Full Name</label>
+                        <input type="text" 
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
+                               placeholder="John Doe">
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Email Address</label>
+                        <input type="email" 
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
+                               placeholder="john@example.com">
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Subject</label>
+                        <select class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                            <option>General Inquiry</option>
+                            <option>Course Information</option>
+                            <option>Technical Support</option>
+                            <option>Partnership Opportunity</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Message</label>
+                        <textarea rows="5" 
+                                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
+                                  placeholder="Tell us how we can help you..."></textarea>
+                    </div>
+
+                    <button type="submit" 
+                            class="w-full px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Send Message
+                    </button>
+                </form>
+            </div>
+
+            <!-- Contact Information -->
+            <div>
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Contact Information</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-purple-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-1">Address</h4>
+                                <p class="text-gray-600">123 Learning Street<br>Education City, EC 12345<br>United States</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-phone text-pink-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-1">Phone</h4>
+                                <p class="text-gray-600">+1 (555) 123-4567<br>Mon-Fri, 9AM-6PM EST</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-envelope text-indigo-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-1">Email</h4>
+                                <p class="text-gray-600">info@learninghub.com<br>support@learninghub.com</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-clock text-green-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-1">Business Hours</h4>
+                                <p class="text-gray-600">Monday - Friday: 9AM - 6PM<br>Saturday: 10AM - 4PM<br>Sunday: Closed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl shadow-xl p-8 text-white">
+                    <h3 class="text-2xl font-bold mb-4">Follow Us</h3>
+                    <p class="mb-6 text-gray-100">Stay connected on social media for updates and learning tips</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                            <i class="fab fa-linkedin-in text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Frequently Asked Questions</h2>
+            <p class="text-xl text-gray-600">Quick answers to common questions</p>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition">
+                <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                    <i class="fas fa-question-circle text-purple-600 mr-3"></i>
+                    How do I enroll in a course?
+                </h3>
+                <p class="text-gray-600 ml-9">
+                    Simply browse our course catalog, select your desired course, and click the "Enroll Now" button. 
+                    You'll be guided through a simple registration process.
+                </p>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition">
+                <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                    <i class="fas fa-question-circle text-purple-600 mr-3"></i>
+                    Are the courses self-paced?
+                </h3>
+                <p class="text-gray-600 ml-9">
+                    Yes! All our courses are self-paced, allowing you to learn at your own speed and on your own schedule.
+                </p>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition">
+                <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                    <i class="fas fa-question-circle text-purple-600 mr-3"></i>
+                    Do I get a certificate upon completion?
+                </h3>
+                <p class="text-gray-600 ml-9">
+                    Absolutely! You'll receive a verified certificate upon successful completion of any course.
+                </p>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition">
+                <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                    <i class="fas fa-question-circle text-purple-600 mr-3"></i>
+                    What is your refund policy?
+                </h3>
+                <p class="text-gray-600 ml-9">
+                    We offer a 30-day money-back guarantee. If you're not satisfied with a course, contact us within 30 days for a full refund.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section (Optional) -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-8 text-white text-center">
+                <h2 class="text-3xl font-bold mb-2">Visit Our Office</h2>
+                <p class="text-gray-100">We'd love to meet you in person!</p>
+            </div>
+            <div class="h-96 bg-gray-200 flex items-center justify-center">
+                <div class="text-center">
+                    <i class="fas fa-map-marked-alt text-6xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-500 text-lg">Interactive Map Would Go Here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
