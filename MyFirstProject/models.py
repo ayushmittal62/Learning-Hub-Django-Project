@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.text import slugify
 
 # Create your models here.
 class SampleModel(models.Model):
@@ -145,3 +146,68 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     if not instance.is_superuser and hasattr(instance, 'profile'):
         instance.profile.save()
+
+
+class Blog(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+    ]
+
+    CATEGORY_CHOICES = [
+        ('technology', 'Technology'),
+        ('education', 'Education'),
+        ('programming', 'Programming'),
+        ('data-science', 'Data Science'),
+        ('web-development', 'Web Development'),
+        ('ai-ml', 'AI & Machine Learning'),
+        ('career', 'Career'),
+        ('tips', 'Tips & Tricks'),
+    ]
+
+
+    title = models.CharField(max_length=200, verbose_name="Blog Title")
+    slug = models.SlugField(max_length=200, unique=True, verbose_name="URL Slug")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blogs', verbose_name="Author")
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='technology', verbose_name="Category")
+    content = models.TextField(verbose_name="Blog Content")
+    excerpt = models.TextField(max_length=300, blank=True, help_text="Brief summary (max 300 characters)")
+    featured_image = models.URLField(max_length=500, blank=True, help_text="URL of the featured image")
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
+    views = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    published_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-published_at', '-created_at']
+        verbose_name = "Blog"
+        verbose_name_plural = "Blogs"
+
+    def __str__(self):
+        return self.title
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+
+        if self.status == 'published' and self.published_at is None:
+            self.published_at = timezone.now()
+        super().save(*args, **kwargs)
+
+    def reading_time(self):
+        word_count = len(self.content.split())
+        reading_speed_wpm = 200 
+        return max(1, word_count // reading_speed_wpm)
+    
+class BlogComment(models.Model):
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_comments')
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.username} on {self.blog.title}"
