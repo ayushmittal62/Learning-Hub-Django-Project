@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
-from .models import SampleModel, SubjectReview, Student
-from django.db.models import Avg, Count
-from .forms import LoginForm, ForgotPasswordForm, CustomSetPasswordForm
+from .models import SampleModel, SubjectReview, Student, Blog, BlogComment
+from django.db.models import Avg, Count, Q
+from .forms import LoginForm, ForgotPasswordForm, CustomSetPasswordForm, BlogForm, BlogCommentForm
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -11,6 +11,8 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 
 
 # Create your views here.
@@ -210,3 +212,174 @@ def user_dashboard(request):
     
     subjects = SampleModel.objects.all()
     return render(request, 'MyProject/user_dashboard.html', {'subjects': subjects})
+
+# Helper function to check if user is superadmin
+def is_superadmin(user):
+    return user.is_superuser
+
+# Public Blog Views (Anyone can view)
+def blog_list(request):
+    """Display all published blogs"""
+    # Get search query
+    search_query = request.GET.get('search', '')
+    category_filter = request.GET.get('category', '')
+    
+    # Start with published blogs
+    blogs = Blog.objects.filter(status='published')
+    
+    # Apply search filter
+    if search_query:
+        blogs = blogs.filter(
+            Q(title__icontains=search_query) |
+            Q(content__icontains=search_query) |
+            Q(excerpt__icontains=search_query)
+        )
+    
+    # Apply category filter
+    if category_filter:
+        blogs = blogs.filter(category=category_filter)
+    
+    # Get categories for filter dropdown
+    categories = Blog.CATEGORY_CHOICES
+    
+    # Annotate with comment count
+    blogs = blogs.annotate(comment_count=Count('comments')).order_by('-published_at')
+    
+    context = {
+        'blogs': blogs,
+        'search_query': search_query,
+        'category_filter': category_filter,
+        'categories': categories,
+        'total_blogs': blogs.count(),
+    }
+    
+    return render(request, 'MyProject/blog_list.html', context)
+
+
+def blog_detail(request, slug):
+    """Display single blog post with comments"""
+    blog = get_object_or_404(Blog, slug=slug, status='published')
+    
+    # Increment view count
+    blog.views += 1
+    blog.save(update_fields=['views'])
+    
+    # Get comments
+    comments = blog.comments.select_related('user').all()
+    
+    # Handle comment form
+    if request.method == 'POST' and request.user.is_authenticated:
+        comment_form = BlogCommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.blog = blog
+            comment.user = request.user
+            comment.save()
+            messages.success(request, 'Comment added successfully!')
+            return redirect('blog_detail', slug=slug)
+    else:
+        comment_form = BlogCommentForm()
+    
+    # Get related blogs (same category, exclude current)
+    related_blogs = Blog.objects.filter(
+        category=blog.category,
+        status='published'
+    ).exclude(id=blog.id)[:3]
+    
+    context = {
+        'blog': blog,
+        'comments': comments,
+        'comment_form': comment_form,
+        'related_blogs': related_blogs,
+        'reading_time': blog.get_reading_time(),
+    }
+    
+    return render(request, 'MyProject/blog_detail.html', context)
+
+
+# Superadmin Only Blog Views (CRUD Operations)
+@login_required
+@user_passes_test(is_superadmin, login_url='/login/')
+def blog_create(request):
+    """Create new blog post (Superadmin only)"""
+    if request.method == 'POST':
+        form = BlogForm(request.POST)
+        if form.is_valid():
+            blog = form.save(commit=False)
+            blog.author = request.user
+            blog.save()
+            messages.success(request, f'Blog "{blog.title}" created successfully!')
+            return redirect('blog_manage')
+    else:
+        form = BlogForm()
+    
+    return render(request, 'MyProject/blog_form.html', {
+        'form': form,
+        'title': 'Create New Blog Post',
+        'button_text': 'Create Blog'
+    })
+
+
+@login_required
+@user_passes_test(is_superadmin, login_url='/login/')
+def blog_update(request, slug):
+    """Update existing blog post (Superadmin only)"""
+    blog = get_object_or_404(Blog, slug=slug)
+    
+    if request.method == 'POST':
+        form = BlogForm(request.POST, instance=blog)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Blog "{blog.title}" updated successfully!')
+            return redirect('blog_manage')
+    else:
+        form = BlogForm(instance=blog)
+    
+    return render(request, 'MyProject/blog_form.html', {
+        'form': form,
+        'title': f'Edit: {blog.title}',
+        'button_text': 'Update Blog',
+        'blog': blog
+    })
+
+
+@login_required
+@user_passes_test(is_superadmin, login_url='/login/')
+def blog_delete(request, slug):
+    """Delete blog post (Superadmin only)"""
+    blog = get_object_or_404(Blog, slug=slug)
+    
+    if request.method == 'POST':
+        title = blog.title
+        blog.delete()
+        messages.success(request, f'Blog "{title}" deleted successfully!')
+        return redirect('blog_manage')
+    
+    return render(request, 'MyProject/blog_delete.html', {'blog': blog})
+
+
+@login_required
+@user_passes_test(is_superadmin, login_url='/login/')
+def blog_manage(request):
+    """Manage all blogs (Superadmin only) - Dashboard"""
+    # Get all blogs (including drafts)
+    blogs = Blog.objects.annotate(
+        comment_count=Count('comments')
+    ).order_by('-created_at')
+    
+    # Statistics
+    total_blogs = blogs.count()
+    published_blogs = blogs.filter(status='published').count()
+    draft_blogs = blogs.filter(status='draft').count()
+    total_views = sum(blog.views for blog in blogs)
+    
+    context = {
+        'blogs': blogs,
+        'total_blogs': total_blogs,
+        'published_blogs': published_blogs,
+        'draft_blogs': draft_blogs,
+        'total_views': total_views,
+    }
+    
+    return render(request, 'MyProject/blog_manage.html', context)
+

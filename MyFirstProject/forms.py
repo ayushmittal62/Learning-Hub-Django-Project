@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import SetPasswordForm
+from .models import Blog, BlogComment
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -67,3 +68,49 @@ class CustomSetPasswordForm(SetPasswordForm):
         }),
         strip=False,
     )
+
+
+class BlogForm(forms.ModelForm):
+    class Meta:
+        model = Blog
+        fields = ['title', 'category', 'content', 'excerpt', 'featured_image', 'status']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500',
+                'placeholder': 'Enter blog title'
+            }),
+            'category': forms.Select(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500'
+            }),
+            'content': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500',
+                'rows': 15,
+                'placeholder': 'Write your blog content here...'
+            }),
+            'excerpt': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500',
+                'rows': 3,
+                'placeholder': 'Brief summary (max 300 characters)'
+            }),
+            'featured_image': forms.URLInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500',
+                'placeholder': 'https://example.com/image.jpg (optional)'
+            }),
+            'status': forms.Select(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500'
+            }),
+        }
+
+
+class BlogCommentForm(forms.ModelForm):
+    class Meta:
+        model = BlogComment
+        fields = ['comment']
+        widgets = {
+            'comment': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500',
+                'rows': 4,
+                'placeholder': 'Write your comment here...'
+            }),
+        }
+
