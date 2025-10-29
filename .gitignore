@@ -1,0 +1,81 @@
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment Variables
+.env
+.env.local
+
+# Node Modules (Tailwind)
+node_modules/
+package-lock.json
+
+# Tailwind Output
+theme/static/css/dist/
+
+# Cache
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Migrations (optional - uncomment if you want to exclude)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Backup files
+*.bak
+*.tmp
+*.temp
+
+# Secrets
+*.pem
+*.key
+secrets.json
