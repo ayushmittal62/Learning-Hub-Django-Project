@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+
+{% block title %}Manage Blogs - Superadmin{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-4xl font-bold text-gray-800">📝 Manage Blog Posts</h1>
+      <p class="text-gray-600 mt-2">Superadmin Dashboard</p>
+    </div>
+    <div class="flex gap-4">
+      <a href="{% url 'blog_create' %}" 
+         class="px-6 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg font-semibold hover:from-green-700 hover:to-blue-700 transition shadow-lg">
+        ➕ Create New Blog
+      </a>
+      <a href="/admin/" 
+         class="px-6 py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition">
+        🔙 Back to Admin
+      </a>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  {% if messages %}
+    <div class="mb-6 space-y-2">
+      {% for message in messages %}
+        <div class="{% if message.tags == 'success' %}bg-green-100 border-green-400 text-green-700{% else %}bg-red-100 border-red-400 text-red-700{% endif %} px-6 py-4 rounded-lg border">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Statistics -->
+  <div class="grid md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-6 shadow-lg">
+      <div class="text-4xl mb-2">📊</div>
+      <div class="text-3xl font-bold">{{ total_blogs }}</div>
+      <div class="text-blue-100">Total Blogs</div>
+    </div>
+    
+    <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-6 shadow-lg">
+      <div class="text-4xl mb-2">✅</div>
+      <div class="text-3xl font-bold">{{ published_blogs }}</div>
+      <div class="text-green-100">Published</div>
+    </div>
+    
+    <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-xl p-6 shadow-lg">
+      <div class="text-4xl mb-2">📝</div>
+      <div class="text-3xl font-bold">{{ draft_blogs }}</div>
+      <div class="text-yellow-100">Drafts</div>
+    </div>
+    
+    <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-6 shadow-lg">
+      <div class="text-4xl mb-2">👁️</div>
+      <div class="text-3xl font-bold">{{ total_views }}</div>
+      <div class="text-purple-100">Total Views</div>
+    </div>
+  </div>
+
+  <!-- Blogs Table -->
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-100 border-b-2 border-gray-300">
+          <tr>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700">Title</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700">Category</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700">Status</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700">Views</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700">Comments</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700">Created</th>
+            <th class="px-6 py-4 text-center text-sm font-bold text-gray-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for blog in blogs %}
+            <tr class="hover:bg-gray-50 transition">
+              <td class="px-6 py-4">
+                <div class="font-semibold text-gray-900">{{ blog.title }}</div>
+                <div class="text-sm text-gray-500">by {{ blog.author.username }}</div>
+              </td>
+              <td class="px-6 py-4">
+                <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
+                  {{ blog.get_category_display }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                {% if blog.status == 'published' %}
+                  <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+                    ✅ Published
+                  </span>
+                {% else %}
+                  <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">
+                    📝 Draft
+                  </span>
+                {% endif %}
+              </td>
+              <td class="px-6 py-4 text-gray-600">
+                👁️ {{ blog.views }}
+              </td>
+              <td class="px-6 py-4 text-gray-600">
+                💬 {{ blog.comment_count }}
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-500">
+                {{ blog.created_at|date:"M d, Y" }}
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center justify-center gap-2">
+                  <a href="{% url 'blog_detail' blog.slug %}" 
+                     class="px-3 py-2 bg-blue-500 text-white rounded-lg text-xs font-semibold hover:bg-blue-600 transition" 
+                     title="View">
+                    👁️
+                  </a>
+                  <a href="{% url 'blog_update' blog.slug %}" 
+                     class="px-3 py-2 bg-yellow-500 text-white rounded-lg text-xs font-semibold hover:bg-yellow-600 transition" 
+                     title="Edit">
+                    ✏️
+                  </a>
+                  <a href="{% url 'blog_delete' blog.slug %}" 
+                     class="px-3 py-2 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition" 
+                     title="Delete">
+                    🗑️
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    {% if not blogs %}
+      <div class="text-center py-12">
+        <div class="text-6xl mb-4">📭</div>
+        <h3 class="text-xl font-bold text-gray-700 mb-2">No blogs yet</h3>
+        <p class="text-gray-500 mb-6">Create your first blog post to get started!</p>
+        <a href="{% url 'blog_create' %}" 
+           class="inline-block px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition">
+          ➕ Create New Blog
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
