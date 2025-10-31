@@ -164,6 +164,12 @@ class Blog(models.Model):
         ('career', 'Career'),
         ('tips', 'Tips & Tricks'),
     ]
+
+    PERMISSION_CHOICES=[
+        ('none', 'Only Superadmin'),
+        ('admin', 'Admin can Edit'),
+        ('user', 'User can Edit')
+    ]
     
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
@@ -178,6 +184,9 @@ class Blog(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     published_at = models.DateTimeField(null=True, blank=True)
     
+    edit_permission = models.CharField(max_length=10, choices=PERMISSION_CHOICES, default='none', help_text="Who can edit this blog")
+    allowed_editors = models.ManyToManyField(User, related_name='editable_blogs', blank=True, help_text="Users allowed to edit this blog")
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = 'Blog Post'
@@ -203,6 +212,40 @@ class Blog(models.Model):
         reading_time = word_count // 200  # Average reading speed: 200 words/min
         return max(1, reading_time)  # Minimum 1 minute
 
+    def can_edit(self, user):
+        """Check if a given user has permission to edit this blog"""
+        if user.is_superuser:
+            return True
+        
+        # Author can always edit their own blog
+        if self.author == user:
+            return True
+        
+        # Check permission level
+        if self.edit_permission == 'none':
+            return False
+        elif self.edit_permission == 'admin':
+            # Check if user is admin
+            return hasattr(user, 'profile') and user.profile.user_type == 'admin'
+        elif self.edit_permission == 'specific':
+            # Check if user is in allowed_editors
+            return self.allowed_editors.filter(id=user.id).exists()
+        return False
+    
+    def permission_display_detail(self):
+        if self.edit_permission == 'none':
+            return "Only Superadmin & Author"
+        elif self.edit_permission == 'admins':
+            return "All Admins + Author"
+        elif self.edit_permission == 'specific':
+            editors = self.allowed_editors.all()
+            if editors:
+                names = ', '.join([e.username for e in editors[:3]])
+                if editors.count() > 3:
+                    names += f' +{editors.count() - 3} more'
+                return f"Specific Users: {names}"
+            return "Specific Users (none selected)"
+        return "Unknown"
 
 class BlogComment(models.Model):
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')
